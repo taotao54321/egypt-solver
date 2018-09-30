@@ -1,0 +1,30 @@
+[package]
+name    = "egypt-solver"
+version = "0.1.0"
+authors = ["taotao54321 <taotao54321@gmail.com>"]
+
+[dependencies]
+failure       = "*"
+generic-array = "*"
+itertools     = "*"
+rand          = "*"
+
+[lib]
+name = "egypt"
+path = "src/lib.rs"
+
+[[bin]]
+name = "bfs"
+path = "src/main-bfs.rs"
+
+[[bin]]
+name = "iddfs"
+path = "src/main-iddfs.rs"
+
+[[bin]]
+name = "ida"
+path = "src/main-ida.rs"
+
+[[bin]]
+name = "genetic"
+path = "src/main-genetic.rs"
