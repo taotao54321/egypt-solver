@@ -40,9 +40,9 @@ fn main() -> Result<(), failure::Error> {
         Ok(sols) => {
             let sols = util::solutions_with_step(&board, &sols);
             for (sol, step) in sols {
-                println!("{} # step={}",
+                println!("{} # rotate={} step={}",
                          sol.iter().join(" "),
-                         step);
+                         sol.len(), step);
                 assert!(util::verify_solution(&board, &sol));
             }
             Ok(())
