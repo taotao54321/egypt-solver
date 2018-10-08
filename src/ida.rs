@@ -11,18 +11,20 @@ pub struct IdaSolver {
     board:          Board,
     solutions:      Vec<Vec<u8>>,
     max_depth:      u32,
+    max_depth_ini:  u32,
     node_count:     u64,
     max_node_count: u64,
 }
 
 impl IdaSolver {
-    pub fn new(max_node_count: u64) -> Self {
+    pub fn new(max_depth_ini: u32, max_node_count: u64) -> Self {
         Self {
             board:      Board::new(0, &[0; 64]),
             solutions:  vec![],
             max_depth:  0,
+            max_depth_ini,
             node_count: 0,
-            max_node_count
+            max_node_count,
         }
     }
 
@@ -54,7 +56,7 @@ impl Solver for IdaSolver {
     fn solve(&mut self, board: &Board) -> Result<Vec<Vec<u8>>,SolverError> {
         self.board     = board.clone();
         self.solutions = vec![];
-        self.max_depth = 0;
+        self.max_depth = self.max_depth_ini;
 
         loop {
             self.node_count = 0;

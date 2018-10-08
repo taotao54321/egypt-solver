@@ -17,16 +17,18 @@ use egypt::{ Solver };
 use egypt::ida::{ IdaSolver };
 
 fn usage() -> ! {
-    eprintln!("Usage: ida [max_node_count]");
+    eprintln!("Usage: ida [max_depth_ini] [max_node_count]");
     process::exit(1);
 }
 
 fn main() -> Result<(), failure::Error> {
+    const MAX_DEPTH_INI_DEFAULT:  u32 = 0;
     const MAX_NODE_COUNT_DEFAULT: u64 = 1_000_000_000_000_000_000;
     let args: Vec<_> = env::args().collect();
-    let max_node_count = match args.len() {
-        2 => args[1].parse()?,
-        1 => MAX_NODE_COUNT_DEFAULT,
+    let (max_depth_ini, max_node_count) = match args.len() {
+        3 => (args[1].parse()?, args[2].parse()?),
+        2 => (args[1].parse()?, MAX_NODE_COUNT_DEFAULT),
+        1 => (MAX_DEPTH_INI_DEFAULT, MAX_NODE_COUNT_DEFAULT),
         _ => usage(),
     };
 
@@ -34,7 +36,7 @@ fn main() -> Result<(), failure::Error> {
     io::stdin().read_to_string(&mut s)?;
     let board = Board::from_str(&s)?;
 
-    let mut solver = IdaSolver::new(max_node_count);
+    let mut solver = IdaSolver::new(max_depth_ini, max_node_count);
     match solver.solve(&board) {
         Ok(sols) => {
             let sols = util::solutions_with_step(&board, &sols);

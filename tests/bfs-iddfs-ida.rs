@@ -58,13 +58,15 @@ fn test_bfs_iddfs_ida() {
         "17-5.in",
     ];
 
+    const MAX_DEPTH_INI: u32 = 0;
+
     const MAX_NODE_COUNT_BFS:   u64 =                10_000_000;
     const MAX_NODE_COUNT_IDDFS: u64 = 1_000_000_000_000_000_000;
     const MAX_NODE_COUNT_IDA:   u64 = 1_000_000_000_000_000_000;
 
-    let mut solver_bfs = BfsSolver::new(MAX_NODE_COUNT_BFS);
-    let mut solver_iddfs = IddfsSolver::new(MAX_NODE_COUNT_IDDFS);
-    let mut solver_ida = IdaSolver::new(MAX_NODE_COUNT_IDA);
+    let mut solver_bfs   = BfsSolver::new(MAX_NODE_COUNT_BFS);
+    let mut solver_iddfs = IddfsSolver::new(MAX_DEPTH_INI, MAX_NODE_COUNT_IDDFS);
+    let mut solver_ida   = IdaSolver::new(MAX_DEPTH_INI, MAX_NODE_COUNT_IDA);
 
     for filename in PROBLEMS_EASY {
         let path = path::Path::new("problem/").join(filename);
