@@ -94,7 +94,7 @@ impl Candidate {
             .fold(0, |sum,&e| sum + u32::from(e));
 
         match state {
-            BoardState::Solved => panic!("internal error"),
+            BoardState::Solved => unreachable!(),
             BoardState::Stuck => {
                 1000 + 150*rotate - 800*k.pow(2) / k_ini.pow(2)
             },
