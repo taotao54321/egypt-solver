@@ -28,3 +28,7 @@ path = "src/main-ida.rs"
 [[bin]]
 name = "genetic"
 path = "src/main-genetic.rs"
+
+[[bin]]
+name = "optimize"
+path = "src/main-optimize.rs"

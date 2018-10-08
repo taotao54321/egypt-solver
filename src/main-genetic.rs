@@ -25,6 +25,7 @@ fn main() -> Result<(), failure::Error> {
     let args: Vec<_> = env::args().collect();
     if args.len() != 2 { usage(); }
     let max_len: u32 = args[1].parse()?;
+    if max_len == 0 { usage(); }
 
     let mut s = String::new();
     io::stdin().read_to_string(&mut s)?;

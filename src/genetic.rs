@@ -34,7 +34,7 @@ struct Candidate {
 }
 
 impl Candidate {
-    fn new(board: &Board, v: Vec<u8>) -> Self {
+    fn new(board: &Board, v: Vec<u8>, k_ini: u32) -> Self {
         let mut board  = board.clone();
         let mut state  = BoardState::Playing;
         let mut rotate = 0;
@@ -64,7 +64,7 @@ impl Candidate {
             }
         }
 
-        let score = Candidate::evaluate(&board, state, rotate, step);
+        let score = Candidate::evaluate(&board, state, rotate, step, k_ini);
 
         Self {
             v,
@@ -75,11 +75,12 @@ impl Candidate {
         }
     }
 
-    fn evaluate(board: &Board, state: BoardState, rotate: u32, step: u32) -> u32 {
+    fn evaluate(board: &Board, state: BoardState, rotate: u32, step: u32, k_ini: u32) -> u32 {
         if state == BoardState::Solved {
             return 100000 - 100*rotate - step;
         }
 
+        /*
         let cnt = board.counts();
         let pena1: u32 = cnt.iter()
             .fold(0, |sum,&e| sum + u32::from(e));
@@ -87,17 +88,21 @@ impl Candidate {
             .filter(|&e| e % 2 != 0)
             .count() as u32;
         let pena = 10*pena1 + 3*pena2;
+        */
+        let cnt = board.counts();
+        let k: u32 = cnt.iter()
+            .fold(0, |sum,&e| sum + u32::from(e));
 
         match state {
             BoardState::Solved => panic!("internal error"),
             BoardState::Stuck => {
-                1000 - pena
+                1000 - 800*k.pow(2) / k_ini.pow(2)
             },
             BoardState::NoMove => {
-                1000 - pena
+                1000 - 800*k.pow(2) / k_ini.pow(2)
             },
             BoardState::Playing => {
-                10000 - pena
+                10000 - 8000*k.pow(2) / k_ini.pow(2)
             },
         }
     }
@@ -128,6 +133,7 @@ pub struct GeneticSolver {
     max_len: u32,
     cands:   Vec<Candidate>,
     rng:     ThreadRng,
+    k_ini:   u32,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -147,6 +153,7 @@ impl GeneticSolver {
             max_len,
             cands: vec![],
             rng:   thread_rng(),
+            k_ini: 0,
         }
     }
 
@@ -232,7 +239,7 @@ impl GeneticSolver {
         //let mut cands = Vec::with_capacity(GeneticSolver::N_CAND);
         self.cands.clear();
         for v in vs {
-            let cand = Candidate::new(&self.board, v);
+            let cand = Candidate::new(&self.board, v, self.k_ini);
             if cand.state == BoardState::Solved {
                 self.max_len = cmp::min(self.max_len, cand.rotate);
             }
@@ -252,6 +259,9 @@ impl GeneticSolver {
 impl Solver for GeneticSolver {
     fn solve(&mut self, board: &Board) -> Result<Vec<Vec<u8>>,SolverError> {
         self.board = board.clone();
+        self.k_ini = board.counts().iter()
+            .fold(0, |sum,&e| sum + u32::from(e));
+
         let vs = (0..GeneticSolver::N_CAND)
             .map(|_| self.random_v())
             .collect();
@@ -261,6 +271,7 @@ impl Solver for GeneticSolver {
             eprintln!("Generation {}: max_len={}", i, self.max_len);
 
             self.evolve();
+            //eprintln!("{:?}", &self.cands[..20]);
         }
 
         let mut res: Vec<_> = self.cands.iter()
