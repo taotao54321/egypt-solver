@@ -17,22 +17,25 @@ use egypt::{ Solver };
 use egypt::genetic::{ GeneticSolver };
 
 fn usage() -> ! {
-    eprintln!("Usage: genetic <max_len>");
+    eprintln!("Usage: genetic <max_len> [n_generation]");
     process::exit(1);
 }
 
 fn main() -> Result<(), failure::Error> {
+    const N_GENE_DEFAULT: u32 = 1000;
     let args: Vec<_> = env::args().collect();
-    if args.len() != 2 { usage(); }
-    let max_len: u32 = args[1].parse()?;
-    if max_len == 0 { usage(); }
+    let (max_len, n_gene) = match args.len() {
+        2 => (args[1].parse()?, N_GENE_DEFAULT),
+        3 => (args[1].parse()?, args[2].parse()?),
+        _ => usage(),
+    };
 
     let mut s = String::new();
     io::stdin().read_to_string(&mut s)?;
 
     let board = Board::from_str(&s)?;
 
-    let mut solver = GeneticSolver::new(max_len);
+    let mut solver = GeneticSolver::new(max_len, n_gene);
     match solver.solve(&board) {
         Ok(sols) => {
             let sols = util::solutions_with_step(&board, &sols);

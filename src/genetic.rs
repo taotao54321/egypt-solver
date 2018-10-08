@@ -131,6 +131,7 @@ impl Candidate {
 pub struct GeneticSolver {
     board:   Board,
     max_len: u32,
+    n_gene:  u32,
     cands:   Vec<Candidate>,
     rng:     ThreadRng,
     k_ini:   u32,
@@ -147,10 +148,11 @@ impl GeneticSolver {
     const N_CAND:  usize = 1000;
     const N_ELITE: usize = 10;
 
-    pub fn new(max_len: u32) -> Self {
+    pub fn new(max_len: u32, n_gene: u32) -> Self {
         Self {
             board: Board::new(0, &[0; 64]),
             max_len,
+            n_gene,
             cands: vec![],
             rng:   thread_rng(),
             k_ini: 0,
@@ -267,7 +269,7 @@ impl Solver for GeneticSolver {
             .collect();
         self.update_cands(vs);
 
-        for i in 0..1000 {
+        for i in 0..self.n_gene {
             eprintln!("Generation {}: max_len={}", i, self.max_len);
 
             self.evolve();
