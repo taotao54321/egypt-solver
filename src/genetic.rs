@@ -96,10 +96,10 @@ impl Candidate {
         match state {
             BoardState::Solved => panic!("internal error"),
             BoardState::Stuck => {
-                1000 - 800*k.pow(2) / k_ini.pow(2)
+                1000 + 150*rotate - 800*k.pow(2) / k_ini.pow(2)
             },
             BoardState::NoMove => {
-                1000 - 800*k.pow(2) / k_ini.pow(2)
+                1000 + 150*rotate - 800*k.pow(2) / k_ini.pow(2)
             },
             BoardState::Playing => {
                 10000 - 8000*k.pow(2) / k_ini.pow(2)
