@@ -102,7 +102,7 @@ impl Candidate {
                 1000 + 150*rotate - 800*k.pow(2) / k_ini.pow(2)
             },
             BoardState::Playing => {
-                10000 - 8000*k.pow(2) / k_ini.pow(2)
+                10000 + 150*rotate - 8000*k.pow(2) / k_ini.pow(2)
             },
         }
     }
@@ -273,7 +273,9 @@ impl Solver for GeneticSolver {
             eprintln!("Generation {}: max_len={}", i, self.max_len);
 
             self.evolve();
-            //eprintln!("{:?}", &self.cands[..20]);
+            if cfg!(debug_assertions) {
+                eprintln!("{:?}", &self.cands[..20]);
+            }
         }
 
         let mut res: Vec<_> = self.cands.iter()
