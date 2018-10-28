@@ -37,6 +37,8 @@ fn main() -> Result<(), failure::Error> {
         let mut opts = util::optimize_solution(&board, &sol);
         optimized.append(&mut opts);
     }
+    optimized.sort();
+    optimized.dedup();
 
     let results = util::solutions_with_step(&board, &optimized);
     for (sol,step) in results {
