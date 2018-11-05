@@ -7,6 +7,7 @@ authors = ["taotao54321 <taotao54321@gmail.com>"]
 failure       = "*"
 generic-array = "*"
 itertools     = "*"
+permutohedron = "*"
 rand          = "*"
 
 [lib]
@@ -32,3 +33,7 @@ path = "src/main-genetic.rs"
 [[bin]]
 name = "optimize"
 path = "src/main-optimize.rs"
+
+[[bin]]
+name = "roomorder"
+path = "src/main-roomorder.rs"
